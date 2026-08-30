@@ -1,0 +1,45 @@
+# ===================================================================
+# ui_settings.py 需要替換的 _clear_all_books 函數
+# ===================================================================
+# 請在 ui_settings.py 中找到原本的 _clear_all_books 函數，
+# 整段替換為以下程式碼。
+#
+# 修改原因：原本的 collection.delete(where={}) 在多數 ChromaDB 版本中
+# 不會刪除任何資料（空 where 被解讀為「不匹配任何文件」）。
+# 新版改為先取得所有 ID，再用 ID 列表分批刪除。
+# ===================================================================
+
+def _clear_all_books(engine, config):
+    """清除向量資料庫中的所有書籍資料（使用可靠的 ID 批量刪除）。"""
+    try:
+        if not engine.vectorstore or not hasattr(engine.vectorstore, "_collection"):
+            st.warning("找不到向量資料庫，可能已經為空。")
+            return
+
+        collection = engine.vectorstore._collection
+
+        # 步驟 1：先取得所有文件的 ID
+        all_ids = collection.get().get("ids", [])
+
+        if not all_ids:
+            st.info("知識庫中已經沒有任何資料。")
+            return
+
+        deleted_count = len(all_ids)
+
+        # 步驟 2：分批刪除（ChromaDB 每次 delete 有數量上限）
+        batch_size = 500
+        for i in range(0, len(all_ids), batch_size):
+            batch = all_ids[i : i + batch_size]
+            collection.delete(ids=batch)
+
+        # 步驟 3：重置引擎狀態
+        engine.bm25_retriever = None
+
+        st.success(f"已成功清除 **{deleted_count}** 筆文件資料！")
+        st.toast("資料已清除，建議前往「知識庫管理」重新上傳書籍。")
+
+    except Exception as e:
+        st.error(f"清除資料時發生錯誤：{e}")
+        import traceback
+        st.code(traceback.format_exc(), language="text")

@@ -1,0 +1,28 @@
+# Python 暫存與快取
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# 虛擬環境
+venv/
+env/
+ENV/
+
+# 資料庫與上傳文獻（保留資料夾結構，忽略內容）
+chroma_db/
+uploaded_books/*
+!uploaded_books/.gitkeep
+logs/
+*.log
+
+# 本地運算與快取 JSON 檔案
+settings.json
+graph_cache.json
+daily_insight_cache.json
+
+# 作業系統暫存
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
