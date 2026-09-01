@@ -10,6 +10,7 @@
      - 💬 智能書籍問答
      - 🕸️ 知識關聯圖譜
      - 📝 Obsidian 筆記
+     - 🧠 第二大腦筆記庫
      - 📚 知識庫管理
      - ⚙️ 系統設定
 """
@@ -90,11 +91,12 @@ with st.sidebar:
     st.caption("Local AI Second Brain OS")
     st.divider()
 
-    # 導航選單
+    # 導航選單（加入 第二大腦筆記庫）
     menu_options = [
         "💬 智能書籍問答",
         "🕸️ 知識關聯圖譜",
         "📝 Obsidian 筆記",
+        "🧠 第二大腦筆記庫",
         "📚 知識庫管理",
         "⚙️ 系統設定"
     ]
@@ -139,6 +141,10 @@ elif page == "🕸️ 知識關聯圖譜":
 elif page == "📝 Obsidian 筆記":
     from ui_obsidian import render_obsidian_page
     render_obsidian_page(engine, config)
+
+elif page == "🧠 第二大腦筆記庫":
+    from ui_vault import render_vault_page
+    render_vault_page()
 
 elif page == "📚 知識庫管理":
     from ui_manage import render_manage_page
